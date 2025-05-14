@@ -3,14 +3,13 @@ package com.searchcourses.api.service;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.searchcourses.api.dtos.ClickCountUrlDto;
 import com.searchcourses.api.dtos.IdClickUrlDto;
 import com.searchcourses.api.entities.ClickCountEntity;
 import com.searchcourses.api.entities.PostEntity;
@@ -58,21 +57,18 @@ public class PostService {
         return new IdClickUrlDto(post.getUrl(), post.getId().toString(), post.getTitle(), count);
     }
 
-    public List<Map<String, Object>> getClickCount() throws Exception {
+    public List<ClickCountUrlDto> getClickCount() throws Exception {
         try {
             List<ClickCountEntity> allClicks = clickCountRepository.findAllWithPost();
 
-            List<Map<String, Object>> result = new ArrayList<>();
-            
-            for(ClickCountEntity click : allClicks) {
-                Map<String, Object> entry = new HashMap<>();
-                Map<String, Object> details = new HashMap<>();
+            List<ClickCountUrlDto> result = new ArrayList<>();
 
-                details.put("count", click.getCount());
-                details.put("date", click.getDateClick());
-
-                entry.put(click.getPost().getTitle(), details);
-                result.add(entry);
+            for (ClickCountEntity click : allClicks) {
+                ClickCountUrlDto dto = new ClickCountUrlDto(null, null, null);
+                dto.setTitle(click.getPost().getTitle());
+                dto.setCount(click.getCount());
+                dto.setDate(click.getDateClick());
+                result.add(dto);
             }
 
             return result;

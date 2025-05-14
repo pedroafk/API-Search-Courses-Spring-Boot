@@ -74,7 +74,7 @@ public class PostController {
     @GetMapping("/click/counts")
     public ResponseEntity<?> getClickCounts() {
         try {
-            List<Map<String, Object>> result = postService.getClickCount();
+            List<ClickCountUrlDto> result = postService.getClickCount();
             return ResponseEntity.ok(result);
         } catch (Exception e) {
             Map<String, Object> error = new HashMap<>();
