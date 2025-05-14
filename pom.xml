@@ -9,7 +9,7 @@
         <relativePath/>
     </parent>
     
-    <groupId>com.itextodesafio</groupId>
+    <groupId>com.searchcourses</groupId>
     <artifactId>apisearchcourses</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>apisearchcourses</name>

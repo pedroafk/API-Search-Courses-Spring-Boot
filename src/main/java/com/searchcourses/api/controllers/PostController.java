@@ -16,10 +16,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.searchcourses.api.entities.ClickCount;
-import com.searchcourses.api.entities.Posts;
+import com.searchcourses.api.entities.ClickCountEntity;
+import com.searchcourses.api.entities.PostEntity;
 import com.searchcourses.api.repositories.ClickCountRepository;
-import com.searchcourses.api.repositories.PostsRepository;
+import com.searchcourses.api.repositories.PostRepository;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -31,10 +31,10 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 
 @RestController
 @RequestMapping(value = "/api/v2/post")
-public class PostControllers {
+public class PostController {
 
     @Autowired
-    private PostsRepository repository;
+    private PostRepository repository;
 
     @Autowired
     private ClickCountRepository clickCountRepository;
@@ -55,25 +55,25 @@ public class PostControllers {
                 return ResponseEntity.badRequest().body("ID inválido ou erro na requisição");
             }
 
-            Optional<Posts> postOptional = repository.findById(id);
+            Optional<PostEntity> postOptional = repository.findById(id);
 
             if (!postOptional.isPresent()) {
                 return ResponseEntity.notFound().build();
             }
 
-            Posts post = postOptional.get();
+            PostEntity post = postOptional.get();
 
             String currentDate = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 
-            Optional<ClickCount> existingClick = clickCountRepository.findByPostAndDateClickStartsWith(post,
+            Optional<ClickCountEntity> existingClick = clickCountRepository.findByPostAndDateClickStartsWith(post,
                     currentDate);
 
             if (existingClick.isPresent()) {
-                ClickCount clickCount = existingClick.get();
+                ClickCountEntity clickCount = existingClick.get();
                 clickCount.setCount(clickCount.getCount() + 1);
                 clickCountRepository.save(clickCount);
             } else {
-                ClickCount clickCount = new ClickCount();
+                ClickCountEntity clickCount = new ClickCountEntity();
                 clickCount.setPost(post);
                 clickCount.setCount(1);
                 clickCount.setDateClick(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
@@ -98,11 +98,11 @@ public class PostControllers {
     @GetMapping("/click/counts")
     public ResponseEntity<?> getClickCounts() {
         try {
-            List<ClickCount> allClicks = clickCountRepository.findAllWithPost();
+            List<ClickCountEntity> allClicks = clickCountRepository.findAllWithPost();
 
             List<Map<String, Object>> result = new ArrayList<>();
 
-            for (ClickCount click : allClicks) {
+            for (ClickCountEntity click : allClicks) {
                 if (click.getPost() != null) {
                     Map<String, Object> entry = new HashMap<>();
                     Map<String, Object> details = new HashMap<>();
@@ -123,14 +123,14 @@ public class PostControllers {
 
     @Operation(summary = "Busca posts", description = "Retorna uma lista de posts baseados em filtros opcionais")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Lista de posts retornada com sucesso", content = @Content(array = @ArraySchema(schema = @Schema(implementation = Posts.class)))),
+            @ApiResponse(responseCode = "200", description = "Lista de posts retornada com sucesso", content = @Content(array = @ArraySchema(schema = @Schema(implementation = PostEntity.class)))),
             @ApiResponse(responseCode = "500", description = "Erro no servidor", content = @Content(schema = @Schema(implementation = Error.class)))
     })
     @GetMapping
     public ResponseEntity<?> findAll(
             @Parameter(description = "Texto para buscar no título ou resumo do post", required = false) @RequestParam(required = false) String content) {
         try {
-            List<Posts> posts;
+            List<PostEntity> posts;
 
             if (content != null && !content.isEmpty()) {
                 posts = repository.findByTitleOrSummaryContaining(content);

@@ -13,7 +13,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "tb_posts")
-public class Posts {
+public class PostEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,9 +28,9 @@ public class Posts {
     @ManyToOne
     @JoinColumn(name = "site_id")
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private Sites site;
+    private SiteEntity site;
 
-    public Posts(){}
+    public PostEntity(){}
 
     public Long getId() {
         return id;
@@ -80,11 +80,11 @@ public class Posts {
         this.pubDate = pubDate;
     }
 
-    public Sites getSite() {
+    public SiteEntity getSite() {
         return site;
     }
 
-    public void setSite(Sites site) {
+    public void setSite(SiteEntity site) {
         this.site = site;
     }
 

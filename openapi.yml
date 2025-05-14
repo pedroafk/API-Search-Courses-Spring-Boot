@@ -1,13 +1,14 @@
 {
   "openapi": "3.0.1",
   "info": {
-    "title": "API para retorno de cursos online",
-    "version": "v0"
+    "title": "Search Courses API",
+    "description": "API for searching courses from various sites.",
+    "version": "1.0.0"
   },
   "servers": [
     {
       "url": "http://localhost:8080",
-      "description": "Servidor local"
+      "description": "Local server"
     }
   ],
   "paths": {
@@ -31,16 +32,6 @@
           }
         ],
         "responses": {
-          "500": {
-            "description": "Erro no servidor",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          },
           "200": {
             "description": "Lista de posts retornada com sucesso",
             "content": {
@@ -50,6 +41,16 @@
                   "items": {
                     "$ref": "#/components/schemas/Posts"
                   }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Erro no servidor",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "string"
                 }
               }
             }
@@ -78,22 +79,22 @@
           }
         ],
         "responses": {
-          "400": {
-            "description": "ID inválido ou erro na requisição",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          },
           "200": {
             "description": "Redirecionamento para a URL do post",
             "content": {
               "*/*": {
                 "schema": {
                   "$ref": "#/components/schemas/SimpleUrlResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "ID inválido ou erro na requisição",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "string"
                 }
               }
             }

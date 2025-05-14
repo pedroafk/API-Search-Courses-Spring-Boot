@@ -1,10 +1,10 @@
-package com.itextodesafio.desafioentrevista;
+package com.searchcourses.api;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class DesafioentrevistaApplicationTests {
+class searchcoursesApplicationTests {
 
 	@Test
 	void contextLoads() {
