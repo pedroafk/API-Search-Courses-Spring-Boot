@@ -32,6 +32,16 @@
           }
         ],
         "responses": {
+          "500": {
+            "description": "Erro no servidor",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorPostResponse"
+                }
+              }
+            }
+          },
           "200": {
             "description": "Lista de posts retornada com sucesso",
             "content": {
@@ -41,16 +51,6 @@
                   "items": {
                     "$ref": "#/components/schemas/PostEntity"
                   }
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Erro no servidor",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorPostResponse"
                 }
               }
             }
@@ -79,22 +79,22 @@
           }
         ],
         "responses": {
-          "400": {
-            "description": "ID inválido ou erro na requisição",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorClickPostsResponse"
-                }
-              }
-            }
-          },
           "200": {
             "description": "Redirecionamento para a URL do post",
             "content": {
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/IdClickUrlResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "ID inválido ou erro na requisição",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorClickPostsResponse"
                 }
               }
             }
@@ -140,6 +140,17 @@
   },
   "components": {
     "schemas": {
+      "ErrorPostResponse": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          }
+        }
+      },
       "PostEntity": {
         "type": "object",
         "properties": {
@@ -193,28 +204,6 @@
           }
         }
       },
-      "ErrorPostResponse": {
-        "type": "object",
-        "properties": {
-          "code": {
-            "type": "string"
-          },
-          "message": {
-            "type": "string"
-          }
-        }
-      },
-      "ErrorClickPostsResponse": {
-        "type": "object",
-        "properties": {
-          "code": {
-            "type": "string"
-          },
-          "message": {
-            "type": "string"
-          }
-        }
-      },
       "IdClickUrlResponse": {
         "type": "object",
         "properties": {
@@ -230,6 +219,17 @@
           "count": {
             "type": "integer",
             "format": "int32"
+          }
+        }
+      },
+      "ErrorClickPostsResponse": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
           }
         }
       },
