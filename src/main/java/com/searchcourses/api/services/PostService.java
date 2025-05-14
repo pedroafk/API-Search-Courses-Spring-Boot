@@ -1,4 +1,4 @@
-package com.searchcourses.api.service;
+package com.searchcourses.api.services;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;

@@ -15,9 +15,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.searchcourses.api.dtos.ClickCountUrlDto;
 import com.searchcourses.api.dtos.IdClickUrlDto;
 import com.searchcourses.api.entities.PostEntity;
-import com.searchcourses.api.exceptions.ErrorClickPostsResponse;
-import com.searchcourses.api.exceptions.ErrorPostResponse;
-import com.searchcourses.api.service.PostService;
+import com.searchcourses.api.exceptions.ClickPostsResponseException;
+import com.searchcourses.api.exceptions.PostResponseException;
+import com.searchcourses.api.services.PostService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -42,7 +42,7 @@ public class PostController {
 
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Redirecionamento para a URL do post", content = @Content(mediaType = "application/json", schema = @Schema(implementation = IdClickUrlDto.class))),
-            @ApiResponse(responseCode = "400", description = "ID inválido ou erro na requisição", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorClickPostsResponse.class))),
+            @ApiResponse(responseCode = "400", description = "ID inválido ou erro na requisição", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ClickPostsResponseException.class))),
     })
 
     @GetMapping("/{id}/click")
@@ -69,7 +69,7 @@ public class PostController {
 
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Contagens de cliques obtidas com sucesso", content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = ClickCountUrlDto.class)))),
-            @ApiResponse(responseCode = "500", description = "Erro interno ao obter contagens de cliques", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorClickPostsResponse.class))) })
+            @ApiResponse(responseCode = "500", description = "Erro interno ao obter contagens de cliques", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ClickPostsResponseException.class))) })
 
     @GetMapping("/click/counts")
     public ResponseEntity<?> getClickCounts() {
@@ -88,7 +88,7 @@ public class PostController {
     @Operation(summary = "Busca posts", description = "Retorna uma lista de posts baseados em filtros opcionais")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Lista de posts retornada com sucesso", content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = PostEntity.class)))),
-            @ApiResponse(responseCode = "500", description = "Erro no servidor", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorPostResponse.class)))
+            @ApiResponse(responseCode = "500", description = "Erro no servidor", content = @Content(mediaType = "application/json", schema = @Schema(implementation = PostResponseException.class)))
     })
     @GetMapping
     public ResponseEntity<?> findAll(

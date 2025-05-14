@@ -1,10 +1,10 @@
 package com.searchcourses.api.exceptions;
 
-public class ErrorPostResponse {
+public class ClickPostsResponseException {
     private String code;
     private String message;
 
-    public ErrorPostResponse(String code, String message) {
+    public ClickPostsResponseException(String code, String message) {
         this.code = code;
         this.message = message;
     }
@@ -24,5 +24,4 @@ public class ErrorPostResponse {
     public void setMessage(String message) {
         this.message = message;
     }
-
 }
