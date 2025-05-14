@@ -1,4 +1,4 @@
-package com.itextodesafio.desafioentrevista.entities;
+package com.searchcourses.api.entities;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

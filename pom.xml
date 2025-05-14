@@ -10,9 +10,9 @@
     </parent>
     
     <groupId>com.itextodesafio</groupId>
-    <artifactId>desafioentrevista</artifactId>
+    <artifactId>apisearchcourses</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>desafioentrevista</name>
+    <name>apisearchcourses</name>
     <description>Demo project for Spring Boot</description>
 
     <properties>

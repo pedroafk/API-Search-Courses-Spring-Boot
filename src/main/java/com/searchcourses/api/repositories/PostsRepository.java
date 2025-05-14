@@ -1,4 +1,4 @@
-package com.itextodesafio.desafioentrevista.repositories;
+package com.searchcourses.api.repositories;
 
 import java.util.List;
 
@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import com.itextodesafio.desafioentrevista.entities.Posts;
+import com.searchcourses.api.entities.Posts;
 
 @Repository
 public interface PostsRepository extends JpaRepository<Posts, Long> {

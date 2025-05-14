@@ -1,4 +1,4 @@
-package com.itextodesafio.desafioentrevista.controllers;
+package com.searchcourses.api.controllers;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;

@@ -1,4 +1,4 @@
-package com.itextodesafio.desafioentrevista.controllers;
+package com.searchcourses.api.controllers;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -16,10 +16,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.itextodesafio.desafioentrevista.entities.ClickCount;
-import com.itextodesafio.desafioentrevista.entities.Posts;
-import com.itextodesafio.desafioentrevista.repositories.ClickCountRepository;
-import com.itextodesafio.desafioentrevista.repositories.PostsRepository;
+import com.searchcourses.api.entities.ClickCount;
+import com.searchcourses.api.entities.Posts;
+import com.searchcourses.api.repositories.ClickCountRepository;
+import com.searchcourses.api.repositories.PostsRepository;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
