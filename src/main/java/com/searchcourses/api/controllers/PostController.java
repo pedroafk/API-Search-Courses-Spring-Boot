@@ -86,7 +86,10 @@ public class PostController {
             return ResponseEntity.ok().body(new IdClickUrlResponse(post.getUrl(), post.getId().toString(), post.getTitle(), existingClick.get().getCount()));
 
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body("ID inválido ou erro na requisição");
+            Map<String, Object> error = new HashMap<>();
+            error.put("code", 500);
+            error.put("message", "ID inválido ou erro na requisição");
+            return ResponseEntity.internalServerError().body(error);
         }
     }// Fim da rota /api/v2/post/{id}/click
 
@@ -122,7 +125,10 @@ public class PostController {
 
             return ResponseEntity.ok(result);
         } catch (Exception e) {
-            return ResponseEntity.internalServerError().body("Erro ao obter contagens de cliques");
+            Map<String, Object> error = new HashMap<>();
+            error.put("code", 500);
+            error.put("message", "Erro interno ao obter contagens de cliques");
+            return ResponseEntity.internalServerError().body(error);
         }
     } // Fim da rota /api/v2/post/click/counts
 
@@ -146,7 +152,10 @@ public class PostController {
 
             return ResponseEntity.ok(posts);
         } catch (Exception e) {
-            return ResponseEntity.internalServerError().body("Erro no servidor");
+            Map<String, Object> error = new HashMap<>();
+            error.put("code", 500);
+            error.put("message", "Erro no servidor");
+            return ResponseEntity.internalServerError().body(error);
         }
     }// Fim da rota /api/v2/post
 
