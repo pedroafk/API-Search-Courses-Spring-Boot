@@ -1,6 +1,5 @@
 package com.searchcourses.api.controllers;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,12 +14,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.searchcourses.api.dtos.ClickCountUrlDto;
 import com.searchcourses.api.dtos.IdClickUrlDto;
-import com.searchcourses.api.entities.ClickCountEntity;
 import com.searchcourses.api.entities.PostEntity;
 import com.searchcourses.api.exceptions.ErrorClickPostsResponse;
 import com.searchcourses.api.exceptions.ErrorPostResponse;
-import com.searchcourses.api.repositories.ClickCountRepository;
-import com.searchcourses.api.repositories.PostRepository;
 import com.searchcourses.api.service.PostService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -37,12 +33,6 @@ public class PostController {
 
     @Autowired
     private PostService postService;
-
-    @Autowired
-    private PostRepository repository;
-
-    @Autowired
-    private ClickCountRepository clickCountRepository;
 
     // Rota /api/v2/post/{id}/click
     @Operation(summary = "Registra clique no post", description = """
@@ -76,29 +66,15 @@ public class PostController {
             - count: número total de cliques
             - date: data do último registro
             """)
+
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Contagens de cliques obtidas com sucesso", content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = ClickCountUrlDto.class)))),
             @ApiResponse(responseCode = "500", description = "Erro interno ao obter contagens de cliques", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorClickPostsResponse.class))) })
+
     @GetMapping("/click/counts")
     public ResponseEntity<?> getClickCounts() {
         try {
-            List<ClickCountEntity> allClicks = clickCountRepository.findAllWithPost();
-
-            List<Map<String, Object>> result = new ArrayList<>();
-
-            for (ClickCountEntity click : allClicks) {
-                if (click.getPost() != null) {
-                    Map<String, Object> entry = new HashMap<>();
-                    Map<String, Object> details = new HashMap<>();
-
-                    details.put("count", click.getCount());
-                    details.put("date", click.getDateClick());
-
-                    entry.put(click.getPost().getTitle(), details);
-                    result.add(entry);
-                }
-            }
-
+            List<Map<String, Object>> result = postService.getClickCount();
             return ResponseEntity.ok(result);
         } catch (Exception e) {
             Map<String, Object> error = new HashMap<>();
@@ -106,9 +82,9 @@ public class PostController {
             error.put("message", "Erro interno ao obter contagens de cliques");
             return ResponseEntity.internalServerError().body(error);
         }
-    } // Fim da rota /api/v2/post/click/counts
+    }
 
-    // Começo da rota /api/v2/post
+    // Rota /api/v2/post
     @Operation(summary = "Busca posts", description = "Retorna uma lista de posts baseados em filtros opcionais")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Lista de posts retornada com sucesso", content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = PostEntity.class)))),
@@ -118,14 +94,7 @@ public class PostController {
     public ResponseEntity<?> findAll(
             @Parameter(description = "Texto para buscar no título ou resumo do post", required = false) @RequestParam(required = false) String content) {
         try {
-            List<PostEntity> posts;
-
-            if (content != null && !content.isEmpty()) {
-                posts = repository.findByTitleOrSummaryContaining(content);
-            } else {
-                posts = repository.findAllByOrderByPubDateDesc();
-            }
-
+            List<PostEntity> posts = postService.getPosts(content);
             return ResponseEntity.ok(posts);
         } catch (Exception e) {
             Map<String, Object> error = new HashMap<>();

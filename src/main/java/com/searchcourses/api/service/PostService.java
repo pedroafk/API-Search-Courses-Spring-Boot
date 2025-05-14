@@ -2,6 +2,10 @@ package com.searchcourses.api.service;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,5 +56,44 @@ public class PostService {
         }
 
         return new IdClickUrlDto(post.getUrl(), post.getId().toString(), post.getTitle(), count);
+    }
+
+    public List<Map<String, Object>> getClickCount() throws Exception {
+        try {
+            List<ClickCountEntity> allClicks = clickCountRepository.findAllWithPost();
+
+            List<Map<String, Object>> result = new ArrayList<>();
+            
+            for(ClickCountEntity click : allClicks) {
+                Map<String, Object> entry = new HashMap<>();
+                Map<String, Object> details = new HashMap<>();
+
+                details.put("count", click.getCount());
+                details.put("date", click.getDateClick());
+
+                entry.put(click.getPost().getTitle(), details);
+                result.add(entry);
+            }
+
+            return result;
+        } catch (Exception e) {
+            throw new Exception("Erro interno ao obter contagens de cliques");
+        }
+    }
+
+    public List<PostEntity> getPosts(String content) throws Exception {
+        try {
+            List<PostEntity> posts;
+
+            if(content != null && !content.isEmpty()) {
+                posts = repository.findByTitleOrSummaryContaining(content);
+            } else {
+                posts = repository.findAllByOrderByPubDateDesc();
+            }
+            
+            return posts;
+        } catch (Exception e) {
+            throw new Exception("Erro no servidor");
+        }
     }
 }
