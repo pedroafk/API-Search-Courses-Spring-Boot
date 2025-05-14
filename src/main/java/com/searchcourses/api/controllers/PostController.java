@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.searchcourses.api.entities.ClickCountEntity;
 import com.searchcourses.api.entities.PostEntity;
+import com.searchcourses.api.exceptions.ErrorClickPostsResponse;
 import com.searchcourses.api.exceptions.ErrorPostResponse;
 import com.searchcourses.api.repositories.ClickCountRepository;
 import com.searchcourses.api.repositories.PostRepository;
@@ -40,13 +41,14 @@ public class PostController {
     @Autowired
     private ClickCountRepository clickCountRepository;
 
+    // Começo da rota /api/v2/post/{id}/click
     @Operation(summary = "Registra clique no post", description = """
             Este endpoint registra um clique para o post especificado.
             **Nota:** Este endpoint realiza alterações no banco de dados (incrementa o contador de cliques), o que é um efeito colateral.
             """)
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Redirecionamento para a URL do post", content = @Content(schema = @Schema(implementation = SimpleUrlResponse.class))),
-            @ApiResponse(responseCode = "400", description = "ID inválido ou erro na requisição", content = @Content(schema = @Schema(implementation = Error.class))),
+            @ApiResponse(responseCode = "200", description = "Redirecionamento para a URL do post", content = @Content(mediaType = "application/json", schema = @Schema(implementation = IdClickUrlResponse.class))),
+            @ApiResponse(responseCode = "400", description = "ID inválido ou erro na requisição", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorClickPostsResponse.class))),
     })
     @GetMapping("/{id}/click")
     public ResponseEntity<?> registerClick(
@@ -81,13 +83,14 @@ public class PostController {
                 clickCountRepository.save(clickCount);
             }
 
-            return ResponseEntity.ok().body(new SimpleUrlResponse(post.getUrl()));
+            return ResponseEntity.ok().body(new IdClickUrlResponse(post.getUrl(), post.getId().toString(), post.getTitle(), existingClick.get().getCount()));
 
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("ID inválido ou erro na requisição");
         }
-    }
+    }// Fim da rota /api/v2/post/{id}/click
 
+    // Começo da rota /api/v2/post/click/counts
     @Operation(summary = "Retorna contagem de cliques por post", description = """
             Retorna um array com a contagem de cliques organizada por post.
             Cada item do array contém o título do post como chave e um objeto com:
@@ -95,7 +98,8 @@ public class PostController {
             - date: data do último registro
             """)
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "500", description = "Erro interno ao obter contagens de cliques", content = @Content(schema = @Schema(implementation = Error.class))) })
+            @ApiResponse(responseCode = "200", description = "Contagens de cliques obtidas com sucesso", content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = ClickCountsUrlResponse.class)))),
+            @ApiResponse(responseCode = "500", description = "Erro interno ao obter contagens de cliques", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorClickPostsResponse.class))) })
     @GetMapping("/click/counts")
     public ResponseEntity<?> getClickCounts() {
         try {
@@ -120,13 +124,9 @@ public class PostController {
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body("Erro ao obter contagens de cliques");
         }
-    }
+    } // Fim da rota /api/v2/post/click/counts
 
-    // Busca todos os posts
-    // Se o parâmetro content for passado, busca posts que contenham o texto no
-    // título ou resumo
-    // api/v2/post?content=texto
-
+    // Começo da rota /api/v2/post
     @Operation(summary = "Busca posts", description = "Retorna uma lista de posts baseados em filtros opcionais")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Lista de posts retornada com sucesso", content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = PostEntity.class)))),
@@ -148,17 +148,59 @@ public class PostController {
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body("Erro no servidor");
         }
-    }
+    }// Fim da rota /api/v2/post
 
-    private static class SimpleUrlResponse {
+    private static class IdClickUrlResponse {
         private String url;
+        private String code;
+        private String title;
+        private Integer count;
 
-        public SimpleUrlResponse(String url) {
+        public IdClickUrlResponse(String url, String code, String title, Integer count) {
             this.url = url;
+            this.code = code;
+            this.title = title;
+            this.count = count;
+        }
+
+        public String getCode() {
+            return code;
+        }
+
+        public String getTitle() {
+            return title;
         }
 
         public String getUrl() {
             return url;
+        }
+
+        public Integer getCount() {
+            return count;
+        }
+    }
+
+    public class ClickCountsUrlResponse {
+        private String title;
+        private String date;
+        private String count;
+
+        public ClickCountsUrlResponse(String title, String date, String count) {
+            this.title = title;
+            this.date = date;
+            this.count = count;
+        }
+
+        public String getTitle() {
+            return title;
+        }
+
+        public String getDate() {
+            return date;
+        }
+
+        public String getCount() {
+            return count;
         }
     }
 }
