@@ -1,8 +1,8 @@
-# README - Desafio Entrevista
+# README - Search Courses
 
 ## Descrição do Projeto
 
-Este projeto é uma API Spring Boot desenvolvida para gerenciar posts, sites e contagens de cliques. Ele oferece endpoints para buscar posts, registrar cliques e obter estatísticas de cliques por post. O projeto foi desenvolvido como parte de um desafio de entrevista do iTexto.
+Este projeto é uma API Spring Boot desenvolvida para gerenciar posts, sites e contagens de cliques. Ele oferece endpoints para buscar posts, registrar cliques e obter estatísticas de cliques por post.
 
 ## Tecnologias Utilizadas
 
@@ -17,9 +17,13 @@ Este projeto é uma API Spring Boot desenvolvida para gerenciar posts, sites e c
 
 O projeto está organizado nos seguintes pacotes:
 
-- `com.itextodesafio.desafioentrevista.controllers`: Contém os controladores da API.
-- `com.itextodesafio.desafioentrevista.entities`: Contém as entidades JPA.
-- `com.itextodesafio.desafioentrevista.repositories`: Contém os repositórios JPA para acesso aos dados.
+- `com.searchcourses.api.configs`: Contém classes de configuração da aplicação.
+- `com.searchcourses.api.controllers`: Contém os controladores da API.
+- `com.searchcourses.api.dtos`: Contém objetos de transferência de dados (DTOs).
+- `com.searchcourses.api.entities`: Contém as entidades JPA.
+- `com.searchcourses.api.exceptions`: Contém classes de tratamento de exceções.
+- `com.searchcourses.api.repositories`: Contém os repositórios JPA para acesso aos dados.
+- `com.searchcourses.api.service`: Contém as classes de serviço/business logic.
 
 ## Entidades Principais
 
@@ -49,8 +53,6 @@ Retorna todos os posts ordenados por data de publicação (decrescente).
         "title": "🐞 Debug no Laravel com Estilo: Conheça o LaraDumps!",
         "summary": "🐞 Debug no Laravel com Estilo: Conheça o LaraDumps!",
         "url": "https://www.youtube.com/watch?v=YcoEsO-wZHE",
-        "indexDate": "2025-05-03 12:35:27",
-        "pubDate": "2025-05-03 12:28:46",
         "site": {
             "id": 6300,
             "name": "Rafael Lunardelli - Pinguim do Laravel - YouTube",
@@ -58,14 +60,19 @@ Retorna todos os posts ordenados por data de publicação (decrescente).
             "rss": "https://www.youtube.com/feeds/videos.xml?channel_id=UCQvMasQi7VdeEYWy8u6BQQw",
             "about": null,
             "iframe": false
-        }
-    }
+        },
+        "indexDate": "2025-05-03 12:35:27",
+        "pubDate": "2025-05-03 12:28:46"
+    },
 ]
 ```
 
 #### Resposta de Erro - Status Code 500
-```
-Erro no servidor
+```json
+{
+    "code": 500,
+    "message": "Erro no servidor"
+}
 ```
 
 ---
@@ -83,13 +90,19 @@ Registra um clique no post especificado e retorna sua URL.
 #### Resposta de Sucesso - Status Code 200
 ```json
 {
-    "url": "https://www.youtube.com/watch?v=-VcuUjOnB1w"
+    "url": "https://www.youtube.com/watch?v=-VcuUjOnB1w",
+    "code": "74221",
+    "title": "🔐 Two Factor Authentication: aprenda o que é e por que é importante para sua segurança digital 💡",
+    "count": 1
 }
 ```
 
 #### Resposta de Erro - Status Code 500
-```
-ID inválido ou erro na requisição
+```json
+{
+    "code": 500,
+    "message": "ID inválido ou erro na requisição"
+}
 ```
 
 ---
@@ -103,17 +116,19 @@ Retorna métricas agregadas de cliques por post.
 ```json
 [
     {
-        "Azure Governance Visualizer": {
-            "date": "2025-05-03 16:48:30",
-            "count": 5
-        }
-    }
+        "title": "Build a LLM from scratch - Sebastian Raschka",
+        "date": "2025-05-04 13:53:44",
+        "count": 4
+    },
 ]
 ```
 
 #### Resposta de Erro - Status Code 500
-```
-Erro ao obter contagens de cliques
+```json
+{
+    "code": 500,
+    "message": "ID inválido ou erro na requisição"
+}
 ```
 
 #### Formato
@@ -128,7 +143,7 @@ A API está configurada para permitir requisições apenas do domínio `http://l
 
 ## Pré-requisitos
 
-- Java 17 instalado.
+- Java 21 instalado.
 - Maven instalado.
 - Banco de dados configurado (o projeto utiliza JPA com Hibernate, configure o `application.properties` conforme necessário).
 
@@ -136,7 +151,7 @@ A API está configurada para permitir requisições apenas do domínio `http://l
 
 1. Navegue até o diretório do projeto:
    ```bash
-   cd desafioentrevista
+   cd API-Search-Courses-Spring-Boot
    ```
 
 2. Compile e execute o projeto:
@@ -257,29 +272,3 @@ INSERT INTO `tb_click_counts` (`post_id`, `count`, `date_click`) VALUES
 
 - `tb_posts` referencia `tb_sites` através do campo `site_id`
 - `tb_click_counts` referencia `tb_posts` através do campo `post_id`
-
-Este esquema representa a estrutura básica do banco de dados com exemplos de dados para facilitar o entendimento das relações entre as tabelas.
-
----
-
-Aqui está uma versão aprimorada do seu texto, com melhor estruturação, clareza e concisão:
-
----
-
-## Desafios Enfrentados
-
-O principal desafio do projeto foi a implementação utilizando uma tecnologia com a qual havia apenas familiaridade superficial, exigindo um significativo aprendizado durante o desenvolvimento.
-
-## Decisões de Design
-
-As principais decisões de arquitetura e design incluíram:
-
-1. **Otimização de Busca**: Implementação direta da URL na consulta de posts, diferentemente da versão de referência.
-
-2. **Rastreamento de Interações**: Utilização de ferramentas de monitoramento de eventos HTML para o mapeamento preciso de cliques com o botão esquerdo e central do mouse.
-
-3. **Funcionalidade Adicional**: Criação de um endpoint exclusivo para retornar métricas de cliques por título, servindo tanto para:
-   - Validação do sistema de rastreamento
-   - Geração de visualizações gráficas
-
-
