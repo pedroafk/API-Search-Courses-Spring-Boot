@@ -1,0 +1,190 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "API para retorno de cursos online",
+    "version": "v0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8080",
+      "description": "Servidor local"
+    }
+  ],
+  "paths": {
+    "/api/v2/post": {
+      "get": {
+        "tags": [
+          "post-controllers"
+        ],
+        "summary": "Busca posts",
+        "description": "Retorna uma lista de posts baseados em filtros opcionais",
+        "operationId": "findAll",
+        "parameters": [
+          {
+            "name": "content",
+            "in": "query",
+            "description": "Texto para buscar no título ou resumo do post",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "500": {
+            "description": "Erro no servidor",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Lista de posts retornada com sucesso",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Posts"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v2/post/{id}/click": {
+      "get": {
+        "tags": [
+          "post-controllers"
+        ],
+        "summary": "Registra clique no post",
+        "description": "Este endpoint registra um clique para o post especificado.\n**Nota:** Este endpoint realiza alterações no banco de dados (incrementa o contador de cliques), o que é um efeito colateral.\n",
+        "operationId": "registerClick",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID do post para registrar o clique",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "ID inválido ou erro na requisição",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Redirecionamento para a URL do post",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/SimpleUrlResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v2/post/click/counts": {
+      "get": {
+        "tags": [
+          "post-controllers"
+        ],
+        "summary": "Retorna contagem de cliques por post",
+        "description": "Retorna um array com a contagem de cliques organizada por post.\nCada item do array contém o título do post como chave e um objeto com:\n- count: número total de cliques\n- date: data do último registro\n",
+        "operationId": "getClickCounts",
+        "responses": {
+          "500": {
+            "description": "Erro interno ao obter contagens de cliques",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Posts": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "title": {
+            "type": "string"
+          },
+          "summary": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string"
+          },
+          "indexDate": {
+            "type": "string"
+          },
+          "pubDate": {
+            "type": "string"
+          },
+          "site": {
+            "$ref": "#/components/schemas/Sites"
+          }
+        }
+      },
+      "Sites": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "name": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string"
+          },
+          "rss": {
+            "type": "string"
+          },
+          "about": {
+            "type": "string"
+          },
+          "iframe": {
+            "type": "boolean"
+          }
+        }
+      },
+      "SimpleUrlResponse": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}
