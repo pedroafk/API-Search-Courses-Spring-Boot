@@ -7,16 +7,16 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import com.searchcourses.api.entities.Posts;
+import com.searchcourses.api.entities.PostEntity;
 
 @Repository
-public interface PostsRepository extends JpaRepository<Posts, Long> {
+public interface PostRepository extends JpaRepository<PostEntity, Long> {
     
-    @Query("SELECT p FROM Posts p WHERE " +
+    @Query("SELECT p FROM PostEntity p WHERE " +
            "LOWER(p.title) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
            "LOWER(p.summary) LIKE LOWER(CONCAT('%', :searchTerm, '%')) " +
            "ORDER BY p.pubDate DESC")
-    List<Posts> findByTitleOrSummaryContaining(@Param("searchTerm") String searchTerm);
+    List<PostEntity> findByTitleOrSummaryContaining(@Param("searchTerm") String searchTerm);
 
-    List<Posts> findAllByOrderByPubDateDesc();
+    List<PostEntity> findAllByOrderByPubDateDesc();
 }

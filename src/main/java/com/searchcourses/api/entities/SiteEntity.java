@@ -13,7 +13,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "tb_sites")
-public class Sites {
+public class SiteEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,9 +26,9 @@ public class Sites {
     
     @OneToMany(mappedBy = "site")
     @JsonIgnore
-    private List<Posts> posts;
+    private List<PostEntity> posts;
 
-    public Sites (){}
+    public SiteEntity (){}
 
     public Long getId() {
         return id;
@@ -78,11 +78,11 @@ public class Sites {
         this.iframe = iframe;
     }
 
-    public List<Posts> getPosts() {
+    public List<PostEntity> getPosts() {
         return posts;
     }
 
-    public void setPosts(List<Posts> posts) {
+    public void setPosts(List<PostEntity> posts) {
         this.posts = posts;
     }
     

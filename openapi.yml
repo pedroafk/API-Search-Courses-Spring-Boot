@@ -1,20 +1,21 @@
 {
   "openapi": "3.0.1",
   "info": {
-    "title": "API para retorno de cursos online",
-    "version": "v0"
+    "title": "Search Courses API",
+    "description": "API for searching courses from various sites.",
+    "version": "1.0.0"
   },
   "servers": [
     {
       "url": "http://localhost:8080",
-      "description": "Servidor local"
+      "description": "Local server"
     }
   ],
   "paths": {
     "/api/v2/post": {
       "get": {
         "tags": [
-          "post-controllers"
+          "post-controller"
         ],
         "summary": "Busca posts",
         "description": "Retorna uma lista de posts baseados em filtros opcionais",
@@ -34,9 +35,9 @@
           "500": {
             "description": "Erro no servidor",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
-                  "type": "string"
+                  "$ref": "#/components/schemas/ErrorPostResponse"
                 }
               }
             }
@@ -44,11 +45,11 @@
           "200": {
             "description": "Lista de posts retornada com sucesso",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/Posts"
+                    "$ref": "#/components/schemas/PostEntity"
                   }
                 }
               }
@@ -60,7 +61,7 @@
     "/api/v2/post/{id}/click": {
       "get": {
         "tags": [
-          "post-controllers"
+          "post-controller"
         ],
         "summary": "Registra clique no post",
         "description": "Este endpoint registra um clique para o post especificado.\n**Nota:** Este endpoint realiza alterações no banco de dados (incrementa o contador de cliques), o que é um efeito colateral.\n",
@@ -78,22 +79,22 @@
           }
         ],
         "responses": {
-          "400": {
-            "description": "ID inválido ou erro na requisição",
+          "200": {
+            "description": "Redirecionamento para a URL do post",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
-                  "type": "string"
+                  "$ref": "#/components/schemas/IdClickUrlDto"
                 }
               }
             }
           },
-          "200": {
-            "description": "Redirecionamento para a URL do post",
+          "400": {
+            "description": "ID inválido ou erro na requisição",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/SimpleUrlResponse"
+                  "$ref": "#/components/schemas/ErrorClickPostsResponse"
                 }
               }
             }
@@ -104,7 +105,7 @@
     "/api/v2/post/click/counts": {
       "get": {
         "tags": [
-          "post-controllers"
+          "post-controller"
         ],
         "summary": "Retorna contagem de cliques por post",
         "description": "Retorna um array com a contagem de cliques organizada por post.\nCada item do array contém o título do post como chave e um objeto com:\n- count: número total de cliques\n- date: data do último registro\n",
@@ -113,9 +114,22 @@
           "500": {
             "description": "Erro interno ao obter contagens de cliques",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
-                  "type": "string"
+                  "$ref": "#/components/schemas/ErrorClickPostsResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Contagens de cliques obtidas com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ClickCountUrlDto"
+                  }
                 }
               }
             }
@@ -126,7 +140,18 @@
   },
   "components": {
     "schemas": {
-      "Posts": {
+      "ErrorPostResponse": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          }
+        }
+      },
+      "PostEntity": {
         "type": "object",
         "properties": {
           "id": {
@@ -142,18 +167,20 @@
           "url": {
             "type": "string"
           },
+          "site": {
+            "$ref": "#/components/schemas/SiteEntity"
+          },
           "indexDate": {
-            "type": "string"
+            "type": "string",
+            "example": "2025-05-14 10:31:03.803860"
           },
           "pubDate": {
-            "type": "string"
-          },
-          "site": {
-            "$ref": "#/components/schemas/Sites"
+            "type": "string",
+            "example": "2025-05-14 10:31:03.803860"
           }
         }
       },
-      "Sites": {
+      "SiteEntity": {
         "type": "object",
         "properties": {
           "id": {
@@ -177,11 +204,47 @@
           }
         }
       },
-      "SimpleUrlResponse": {
+      "IdClickUrlDto": {
         "type": "object",
         "properties": {
           "url": {
             "type": "string"
+          },
+          "code": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "count": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "ErrorClickPostsResponse": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          }
+        }
+      },
+      "ClickCountUrlDto": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "date": {
+            "type": "string"
+          },
+          "count": {
+            "type": "integer",
+            "format": "int32"
           }
         }
       }

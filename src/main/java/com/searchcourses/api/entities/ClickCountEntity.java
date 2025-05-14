@@ -10,7 +10,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "tb_click_counts")
-public class ClickCount {
+public class ClickCountEntity {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,9 +19,9 @@ public class ClickCount {
     private String dateClick;
     @ManyToOne
     @JoinColumn(name = "post_id")
-    private Posts post;
+    private PostEntity post;
 
-    public ClickCount(){}
+    public ClickCountEntity(){}
 
     public Long getId() {
         return id;
@@ -47,11 +47,11 @@ public class ClickCount {
         this.dateClick = dateClick;
     }
 
-    public Posts getPost() {
+    public PostEntity getPost() {
         return post;
     }
 
-    public void setPost(Posts post) {
+    public void setPost(PostEntity post) {
         this.post = post;
     }
     
