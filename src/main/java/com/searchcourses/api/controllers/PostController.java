@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.searchcourses.api.entities.ClickCountEntity;
 import com.searchcourses.api.entities.PostEntity;
+import com.searchcourses.api.exceptions.ErrorPostResponse;
 import com.searchcourses.api.repositories.ClickCountRepository;
 import com.searchcourses.api.repositories.PostRepository;
 
@@ -121,10 +122,15 @@ public class PostController {
         }
     }
 
+    // Busca todos os posts
+    // Se o parâmetro content for passado, busca posts que contenham o texto no
+    // título ou resumo
+    // api/v2/post?content=texto
+
     @Operation(summary = "Busca posts", description = "Retorna uma lista de posts baseados em filtros opcionais")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Lista de posts retornada com sucesso", content = @Content(array = @ArraySchema(schema = @Schema(implementation = PostEntity.class)))),
-            @ApiResponse(responseCode = "500", description = "Erro no servidor", content = @Content(schema = @Schema(implementation = Error.class)))
+            @ApiResponse(responseCode = "200", description = "Lista de posts retornada com sucesso", content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = PostEntity.class)))),
+            @ApiResponse(responseCode = "500", description = "Erro no servidor", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorPostResponse.class)))
     })
     @GetMapping
     public ResponseEntity<?> findAll(

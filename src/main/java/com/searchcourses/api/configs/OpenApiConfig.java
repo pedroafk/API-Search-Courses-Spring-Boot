@@ -1,4 +1,4 @@
-package com.searchcourses.api.config;
+package com.searchcourses.api.configs;
 
 import java.util.Collections;
 

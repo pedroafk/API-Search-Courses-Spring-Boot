@@ -2,6 +2,7 @@ package com.searchcourses.api.entities;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -18,17 +19,25 @@ public class PostEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String title;
+
     @Column(length = 10000)
     private String summary;
-    private String url;
-    private String indexDate;
-    private String pubDate;
 
+    private String url;
+    
     @ManyToOne
     @JoinColumn(name = "site_id")
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private SiteEntity site;
+
+    @Schema(example = "2025-05-14 10:31:03.803860")
+    private String indexDate;
+
+    @Schema(example = "2025-05-14 10:31:03.803860")
+    private String pubDate;
+
 
     public PostEntity(){}
 
@@ -87,7 +96,4 @@ public class PostEntity {
     public void setSite(SiteEntity site) {
         this.site = site;
     }
-
-
-
 }

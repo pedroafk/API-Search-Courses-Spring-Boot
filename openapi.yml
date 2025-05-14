@@ -15,7 +15,7 @@
     "/api/v2/post": {
       "get": {
         "tags": [
-          "post-controllers"
+          "post-controller"
         ],
         "summary": "Busca posts",
         "description": "Retorna uma lista de posts baseados em filtros opcionais",
@@ -32,25 +32,25 @@
           }
         ],
         "responses": {
-          "200": {
-            "description": "Lista de posts retornada com sucesso",
+          "500": {
+            "description": "Erro no servidor",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Posts"
-                  }
+                  "$ref": "#/components/schemas/ErrorPostResponse"
                 }
               }
             }
           },
-          "500": {
-            "description": "Erro no servidor",
+          "200": {
+            "description": "Lista de posts retornada com sucesso",
             "content": {
-              "*/*": {
+              "application/json": {
                 "schema": {
-                  "type": "string"
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PostEntity"
+                  }
                 }
               }
             }
@@ -61,7 +61,7 @@
     "/api/v2/post/{id}/click": {
       "get": {
         "tags": [
-          "post-controllers"
+          "post-controller"
         ],
         "summary": "Registra clique no post",
         "description": "Este endpoint registra um clique para o post especificado.\n**Nota:** Este endpoint realiza alterações no banco de dados (incrementa o contador de cliques), o que é um efeito colateral.\n",
@@ -105,7 +105,7 @@
     "/api/v2/post/click/counts": {
       "get": {
         "tags": [
-          "post-controllers"
+          "post-controller"
         ],
         "summary": "Retorna contagem de cliques por post",
         "description": "Retorna um array com a contagem de cliques organizada por post.\nCada item do array contém o título do post como chave e um objeto com:\n- count: número total de cliques\n- date: data do último registro\n",
@@ -127,7 +127,18 @@
   },
   "components": {
     "schemas": {
-      "Posts": {
+      "ErrorPostResponse": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          }
+        }
+      },
+      "PostEntity": {
         "type": "object",
         "properties": {
           "id": {
@@ -143,18 +154,20 @@
           "url": {
             "type": "string"
           },
+          "site": {
+            "$ref": "#/components/schemas/SiteEntity"
+          },
           "indexDate": {
-            "type": "string"
+            "type": "string",
+            "example": "2025-05-14 10:31:03.803860"
           },
           "pubDate": {
-            "type": "string"
-          },
-          "site": {
-            "$ref": "#/components/schemas/Sites"
+            "type": "string",
+            "example": "2025-05-14 10:31:03.803860"
           }
         }
       },
-      "Sites": {
+      "SiteEntity": {
         "type": "object",
         "properties": {
           "id": {
