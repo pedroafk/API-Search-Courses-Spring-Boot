@@ -1,4 +1,4 @@
-# README - Search Courses
+# README - Search Courses API
 
 ## Descrição do Projeto
 
