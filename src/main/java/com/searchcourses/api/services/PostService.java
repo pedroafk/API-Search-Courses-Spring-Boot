@@ -36,8 +36,7 @@ public class PostService {
         }
 
         PostEntity post = postOptional.get();
-        String currentDate = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-        Optional<ClickCountEntity> existingClick = clickCountRepository.findByPostAndDateClickStartsWith(post, currentDate);
+        Optional<ClickCountEntity> existingClick = clickCountRepository.findByPostId(post.getId());
 
         int count;
         if(existingClick.isPresent()) {
